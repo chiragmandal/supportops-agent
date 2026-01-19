@@ -107,7 +107,7 @@ ollama serve
 ```
 
 
-In another terminal, verify the server is reachable:
+- In another terminal, verify the server is reachable:
 
 ```bash
 
@@ -127,7 +127,7 @@ ollama pull llama3.1
 
 ### Step 2. Create a fresh conda environment
 
-Create a new conda environment and activate it.
+- Create a new conda environment and activate it.
 
 ```bash
 
@@ -138,7 +138,7 @@ python -m pip install --upgrade pip
 
 ```
 
-Install the Python dependencies. If you want a reproducible setup, use pinned versions.
+- Install the Python dependencies. If you want a reproducible setup, use pinned versions.
 
 ```bash
 
@@ -156,7 +156,7 @@ pip install "gradio==4.44.1" \
 
 ### Step 3. Run the app
 
-Run python app.py from the repository root.
+- Run python app.py from the repository root.
 
 ```bash
 
@@ -164,17 +164,17 @@ python app.py
 
 ```
 
-Gradio will print a local URL, typically http://127.0.0.1:7860.
+- Gradio will print a local URL, typically http://127.0.0.1:7860.
 
 Open it in your browser and paste a ticket.
 
 ## Example tickets to try
 
-I was charged twice this month and I need a refund. Invoice shows two payments. customer_tier=SMB plan=monthly
+- I was charged twice this month and I need a refund. Invoice shows two payments. customer_tier=SMB plan=monthly
 
-Lost my 2FA phone, cannot log in. I am the admin and need urgent access.
+- Lost my 2FA phone, cannot log in. I am the admin and need urgent access.
 
-We suspect fraudulent transactions and possible AML flag. What is happening.
+- We suspect fraudulent transactions and possible AML flag. What is happening.
 
 ## Demo Screenshot
 
@@ -182,36 +182,36 @@ We suspect fraudulent transactions and possible AML flag. What is happening.
 
 ## Output format
 
-The chat response contains a customer facing answer followed by a routing decision.
+- The chat response contains a customer facing answer followed by a routing decision.
 
-A JSON panel is included showing category, priority, sentiment, confidence, missing info, citations, and checker output.
+- A JSON panel is included showing category, priority, sentiment, confidence, missing info, citations, and checker output.
 
-This makes the system easy to evaluate and improve.
+- This makes the system easy to evaluate and improve.
 
 ## Metrics you can add next
 
-This repository is structured so you can add an evaluation harness easily.
+- This repository is structured so you can add an evaluation harness easily.
 
-You can create a small labeled dataset of tickets and compute category accuracy and routing macro F1.
+- You can create a small labeled dataset of tickets and compute category accuracy and routing macro F1.
 
-You can label which knowledge base document should be retrieved and compute retrieval recall at k.
+- You can label which knowledge base document should be retrieved and compute retrieval recall at k.
 
-You can measure unsupported claim rate using the checker output and show before and after improvements if you add a second draft pass.
+- You can measure unsupported claim rate using the checker output and show before and after improvements if you add a second draft pass.
 
 ## Safety and compliance notes
 
-The assistant is instructed to never ask for full card numbers or full bank account details.
+- The assistant is instructed to never ask for full card numbers or full bank account details.
 
-Security related topics like fraud suspicion, AML flags, or access tampering are routed to security escalation.
+- Security related topics like fraud suspicion, AML flags, or access tampering are routed to security escalation.
 
-The assistant avoids revealing internal detection logic and stays grounded in the knowledge snippets.
+- The assistant avoids revealing internal detection logic and stays grounded in the knowledge snippets.
 
 ## How to extend
 
-Add more documents in the kb folder and re run the app to re index.
+- Add more documents in the kb folder and re run the app to re index.
 
-Replace routing logic in router.py with a policy table or a learned classifier.
+- Replace routing logic in router.py with a policy table or a learned classifier.
 
-Add tool calls such as invoice lookup or transaction status checks from a local CSV to make it feel like a real internal support tool.
+- Add tool calls such as invoice lookup or transaction status checks from a local CSV to make it feel like a real internal support tool.
 
-Add eval scripts that generate a report and a metrics table for your README.
+- Add eval scripts that generate a report and a metrics table for your README.
