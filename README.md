@@ -37,13 +37,13 @@ This project is a locally runnable AI assistant that helps a support team handle
                              │       │
                              │       │
                              ▼       ▼
-                  ┌────────────────┐  ┌─────────────────────┐
-                  │   Triage LLM   │  │  Retriever (RAG)    │
-                  │ triage.py      │  │ retrieve.py         │
-                  │ ChatOllama     │  │ Chroma + embeddings │
-                  └───────┬────────┘  └───────────┬─────────┘
-                          │                       │
-                          ▼                       ▼
+                ┌────────────────┐  ┌─────────────────────┐
+                │   Triage LLM   │  │  Retriever (RAG)    │
+                │ triage.py      │  │ retrieve.py         │
+                │ ChatOllama     │  │ Chroma + embeddings │
+                └───────┬────────┘  └───────────┬─────────┘
+                        │                       │
+                        ▼                       ▼
                  ┌─────────────────┐     ┌───────────────────┐
                  │ Reply Writer LLM│     │ Local KB Documents│
                  │ reply.py        │     │ kb/*.md           │
@@ -65,49 +65,104 @@ This project is a locally runnable AI assistant that helps a support team handle
                  │Response + Routing + JSON Panel│
                  │ Answer, citations, debug info │
                  └───────────────────────────────┘
-
+```
 
 ## Tech stack
 
-The LLM runs locally using Ollama with the llama3.1 model.
-
-Embeddings are generated locally using sentence transformers.
-
-The vector database is Chroma with persistence on disk.
-
-The UI is Gradio.
-
-The orchestration is implemented in modular Python files so it is easy to extend or replace components.
+- LLM: Ollama with llama3.1 running locally
+- Embeddings: sentence transformers locally
+- Vector database: Chroma with persistence on disk
+- UI: Gradio
+- Orchestration: modular Python code with clear separation of responsibilities
 
 ## Repository structure
 
-The agent folder contains the triage module, retrieval module, reply writer, checker, router, and the end to end agent runner.
+- agent
+  - agent.py orchestrates the end to end flow
+  - triage.py predicts category, priority, sentiment, missing info
+  - retrieve.py builds or loads a persisted Chroma index and retrieves KB chunks
+  - reply.py drafts the response grounded in retrieved snippets and produces citations
+  - checker.py flags unsupported claims and risky requests
+  - router.py converts triage output into a routing decision
+  - schemas.py defines structured outputs using Pydantic
+- kb
+  - billing_policy.md, account_access.md, troubleshooting.md, security.md
+- chroma_db
+  - created automatically on first run
+  - should not be committed to git
 
-The kb folder contains example internal documentation like billing policy, account access recovery, troubleshooting, and security rules.
+## Quickstart
 
-The chroma_db folder is created automatically when you run the app. It stores the persisted vector index and should not be committed.
+### Prerequisites
 
-## Local setup
-
-You need two things. Ollama running and a Python environment with dependencies.
+- Install Ollama on macOS and pull the model
+- Start the Ollama server and keep it running
 
 ### Step 1. Start Ollama
 
-Run ollama serve in a terminal and keep it running.
+```bash
 
-Confirm it is reachable by calling the tags endpoint on localhost port 11434.
+ollama serve
 
-Make sure the model exists by running ollama list. If llama3.1 is missing, pull it using ollama pull llama3.1.
+```
+
+
+In another terminal, verify the server is reachable:
+
+```bash
+
+curl http://localhost:11434/api/tags
+
+```
+
+Ensure the model exists:
+
+```bash
+
+ollama list
+ollama pull llama3.1
+
+```
+
 
 ### Step 2. Create a fresh conda environment
 
 Create a new conda environment and activate it.
 
+```bash
+
+conda deactivate
+conda create -n supportops python=3.11 -y
+conda activate supportops
+python -m pip install --upgrade pip
+
+```
+
 Install the Python dependencies. If you want a reproducible setup, use pinned versions.
+
+```bash
+
+pip install "gradio==4.44.1" \
+            "langchain==0.2.16" \
+            "langchain-community==0.2.16" \
+            "langchain-ollama==0.1.3" \
+            "langchain-text-splitters==0.2.4" \
+            "chromadb==0.5.5" \
+            "sentence-transformers==3.0.1" \
+            "pydantic==2.8.2" \
+            "python-dotenv==1.0.1"
+
+```
 
 ### Step 3. Run the app
 
 Run python app.py from the repository root.
+
+```bash
+
+python app.py
+
+```
 
 Gradio will print a local URL, typically http://127.0.0.1:7860.
 
@@ -120,6 +175,10 @@ I was charged twice this month and I need a refund. Invoice shows two payments. 
 Lost my 2FA phone, cannot log in. I am the admin and need urgent access.
 
 We suspect fraudulent transactions and possible AML flag. What is happening.
+
+## Demo Screenshot
+
+![Fintech SaaS SupportOps Agent UI](assets/ui-demo.png)
 
 ## Output format
 
